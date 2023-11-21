@@ -9,9 +9,10 @@ const contactSchema = new Schema(
       required: [true, "Set name for contact"],
       index: true,
       unique: true,
-      trim: true,
-      minLength: 2,
-      maxLength: 20,
+      matches: [
+        /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
+        "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+      ],
     },
     email: {
       type: String,
@@ -35,4 +36,4 @@ contactSchema.post("save", MongooseError);
 
 const Contact = model("Contact", contactSchema);
 
-module.exports = {Contact};
+module.exports = { Contact };
