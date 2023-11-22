@@ -16,7 +16,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({ message: err.message });
+  res.status(err.status || 500).send({ message: err.message });
 });
 
 module.exports = app;
