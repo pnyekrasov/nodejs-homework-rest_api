@@ -22,7 +22,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-      minlength: 8,
+      minlength: 4,
     },
   },
   { versionKey: false, timestamps: true }
@@ -30,6 +30,8 @@ const userSchema = new Schema(
 
 userSchema.post("save", MongooseError);
 
-const User = model("User", userSchema);
+const User = model("user", userSchema);
 
 module.exports = { User };
+
+

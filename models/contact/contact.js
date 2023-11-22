@@ -34,6 +34,6 @@ const contactSchema = new Schema(
 
 contactSchema.post("save", MongooseError);
 
-const Contact = model("Contact", contactSchema);
+const Contact = model("contact", contactSchema);
 
 module.exports = { Contact };
