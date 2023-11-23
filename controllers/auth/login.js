@@ -23,7 +23,7 @@ const login = async (req, res) => {
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "16h" });
-
+  await User.findByIdAndUpdate(user._id, {token});
   res.send({ token });
 };
 

@@ -9,7 +9,7 @@ const updateStatusContact = async (req, res) => {
     { new: true }
   ).exec();
   if (!result) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404);
   }
   res.send(result);
 };

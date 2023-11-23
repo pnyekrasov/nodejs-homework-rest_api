@@ -6,7 +6,7 @@ const jsonParser = express.json();
 
 const authCtrl = require("../../controllers/auth");
 
-const { validateBody } = require("../../middlewares");
+const { validateBody, auth } = require("../../middlewares");
 
 const schemes = require("../../schemes/user");
 
@@ -23,5 +23,9 @@ router.post(
   validateBody(schemes.logInUserSchema),
   authCtrl.login
 );
+
+router.post("/logout", auth, authCtrl.logout);
+
+router.get("/current", auth, authCtrl.getCurrent);
 
 module.exports = router;

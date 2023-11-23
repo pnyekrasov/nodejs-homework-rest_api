@@ -8,7 +8,7 @@ const getContact = async (req, res) => {
     "-createdAt -updatedAt"
   ).exec();
   if (!result) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404);
   }
   res.send(result);
 };
