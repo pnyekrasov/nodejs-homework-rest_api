@@ -24,7 +24,7 @@ router.post(
   authCtrl.login
 );
 
-router.post("/logout", auth, authCtrl.logout);
+router.get("/logout", auth, authCtrl.logout);
 
 router.get("/current", auth, authCtrl.getCurrent);
 

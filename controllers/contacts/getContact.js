@@ -14,3 +14,4 @@ const getContact = async (req, res) => {
 };
 
 module.exports = getContact;
+

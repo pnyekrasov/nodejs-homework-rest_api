@@ -13,9 +13,9 @@ const updateContact = require('./updateContact.js');
 const updateStatusContact = require('./updateStatusContact.js');;
 
 module.exports = {
-  getContacts: ctrlWrap(getContacts),
+  getContacts,
   getContact: ctrlWrap(getContact),
-  createContact: ctrlWrap(createContact),
+  createContact,
   deleteContact: ctrlWrap(deleteContact),
   updateContact: ctrlWrap(updateContact),
   updateStatusContact: ctrlWrap(updateStatusContact),

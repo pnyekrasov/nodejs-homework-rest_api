@@ -7,8 +7,6 @@ const contactSchema = new Schema(
     name: {
       type: String,
       required: [true, "Set name for contact"],
-      // index: true,
-      // unique: true,
       matches: [
         /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
         "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"

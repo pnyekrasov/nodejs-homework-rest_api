@@ -1,18 +1,21 @@
+const mongoose = require("mongoose");
+require("colors");
+
 const app = require("./app");
 
-const mongoose = require("mongoose");
-
-  const DB_URI = process.env.DB_URI;
+const { DB_URI, PORT = 5000 } = process.env;
 
 mongoose
   .connect(DB_URI)
   .then(() => {
     console.info("Database connection successful");
-    app.listen(5000, () => {
-      console.info("Server running. Use our API on port: 5000");
+    app.listen(PORT, () => {
+      console.info(
+        `Server running. Use our API on port: ${PORT}`.green.italic.bold
+      );
     });
   })
   .catch((err) => {
-    console.log(err.message);
+    console.log(err.message.red.bold);
     process.exit(1);
   });

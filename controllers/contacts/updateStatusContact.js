@@ -3,15 +3,15 @@ const { Contact } = require("../../models/contact/contact");
 const { HttpError } = require("../../helpers");
 
 const updateStatusContact = async (req, res) => {
-  const result = await Contact.findByIdAndUpdate(
+  const contact = await Contact.findByIdAndUpdate(
     req.params.contactId,
     req.body,
     { new: true }
   ).exec();
-  if (!result) {
+  if (!contact) {
     throw HttpError(404);
   }
-  res.send(result);
+  res.status(200).send({ code: 200, contact });
 };
 
 module.exports = updateStatusContact;
