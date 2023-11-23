@@ -4,14 +4,6 @@ const { MongooseError } = require("../../helpers");
 
 const userSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: [true, "Name is required"],
-      matches: [
-        /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
-        "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan",
-      ],
-    },
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -42,5 +34,3 @@ userSchema.post("save", MongooseError);
 const User = model("user", userSchema);
 
 module.exports = { User };
-
-

@@ -1,12 +1,6 @@
 const Joi = require("joi");
 
 const registerUserSchema = Joi.object({
-  name: Joi.string()
-    .required("Name is required")
-    .pattern(
-      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
-      "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-    ),
   email: Joi.string()
     .required("Email is required")
     // index: true,
