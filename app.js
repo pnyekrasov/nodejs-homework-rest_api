@@ -2,20 +2,25 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 
+require("dotenv").config();
+
+const contactsRouter = require("./routes/api");
+
 const app = express();
 
-app.use(express.urlencoded({ extended: false}))
+app.use(express.urlencoded({ extended: false }));
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
 app.use(cors());
 
-app.use("/users", require("./routes/api/auth"));
-app.use("/api/contacts", require("./routes/api/contacts"));
+app.use("/api/contacts", contactsRouter);
 
 app.use((err, req, res, next) => {
-  res.status(err.status || 500).send({ message: err.message });
+  res
+    .status(err.status || 500)
+    .send({ code: err.status, message: err.message });
 });
 
 module.exports = app;

@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const { MongooseError } = require("../../helpers");
+const { MongooseError } = require("../helpers");
 
 const contactSchema = new Schema(
   {
@@ -15,7 +15,7 @@ const contactSchema = new Schema(
     email: {
       type: String,
       required: [true, "Set email for contact"],
-      match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,6})+$/,
+      match:/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,6})+$/,
     },
     phone: {
       type: String,
@@ -26,16 +26,10 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: 'user',
-    }
   },
   { versionKey: false, timestamps: true }
 );
 
 contactSchema.post("save", MongooseError);
 
-const Contact = model("contact", contactSchema);
-
-module.exports = { Contact };
+module.exports = model("Contact", contactSchema);
