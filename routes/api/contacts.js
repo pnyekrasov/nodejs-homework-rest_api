@@ -4,26 +4,26 @@ const router = express.Router();
 
 const jsonParser = express.json();
 
-const ContactsCtrl = require("../../controllers/contacts");
+const contactsCtrl = require("../../controllers");
 
 const { validateBody, validateId } = require("../../middlewares");
 
-const schemes = require("../../schemes/contacts");
+const schemes = require("../../schemes");
 
-router.get("/", ContactsCtrl.getContacts);
+router.get("/", contactsCtrl.getAll);
 
-router.get("/:contactId", validateId, ContactsCtrl.getContact);
+router.get("/:contactId", validateId, contactsCtrl.getById);
 
-router.post("/", jsonParser, validateBody(schemes.addSchema), ContactsCtrl.createContact);
+router.post("/", jsonParser, validateBody(schemes.addSchema), contactsCtrl.add);
 
-router.delete("/:contactId", validateId, ContactsCtrl.deleteContact);
+router.delete("/:contactId", validateId, contactsCtrl.remove);
 
 router.put(
   "/:contactId",
   jsonParser,
   validateBody(schemes.addSchema),
   validateId,
-  ContactsCtrl.updateContact
+  contactsCtrl.updateByID
 );
 
 router.patch(
@@ -31,7 +31,7 @@ router.patch(
   jsonParser,
   validateBody(schemes.updateFavoriteSchema),
   validateId,
-  ContactsCtrl.updateStatusContact
+  contactsCtrl.updateStatusContact
 );
 
 module.exports = router;
