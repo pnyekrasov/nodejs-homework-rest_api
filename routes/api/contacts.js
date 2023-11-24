@@ -4,7 +4,7 @@ const router = express.Router();
 
 const jsonParser = express.json();
 
-const contactsCtrl = require("../../controllers");
+const contactsCtrl = require("../../controllers/ContactsController");
 
 const { validateBody, validateId } = require("../../middlewares");
 

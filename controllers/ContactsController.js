@@ -1,11 +1,11 @@
-const Contact = require("../models");
+const { Contact } = require("../models/contact");
 
 const { HttpError, ctrlWrap } = require("../helpers");
 
 class ContactsController {
   getAll = ctrlWrap(async (req, res) => {
     const contacts = await Contact.find({}, "-createdAt -updatedAt").exec();
-    res.status(200).send({code: 200, contacts, qty: contacts.length});
+    res.status(200).send({ code: 200, contacts, qty: contacts.length });
   });
 
   getById = ctrlWrap(async (req, res) => {
@@ -25,22 +25,24 @@ class ContactsController {
     if (result) {
       throw HttpError(409, `Contact ${name} already exists`);
     }
-  
+
     if (!name || !email || !phone) {
       throw HttpError(400);
-    }  
+    }
 
     const contact = await Contact.create({ ...req.body });
-  
+
     res.status(201).send({ code: 201, contact });
   });
 
   remove = ctrlWrap(async (req, res) => {
-    const contact = await Contact.findByIdAndDelete(req.params.contactId).exec();
+    const contact = await Contact.findByIdAndDelete(
+      req.params.contactId
+    ).exec();
     if (!contact) {
       throw HttpError(404);
     }
-    res.send({code: 200, message: "contact deleted" });
+    res.send({ code: 200, message: "contact deleted" });
   });
 
   updateByID = ctrlWrap(async (req, res) => {
@@ -48,13 +50,12 @@ class ContactsController {
       req.params.contactId,
       req.body,
       { new: true }
-    ).exec();  
+    ).exec();
     if (!contact) {
       throw HttpError(404);
     }
     res.status(200).send({ code: 200, contact });
   });
-
 
   updateStatusContact = ctrlWrap(async (req, res) => {
     const contact = await Contact.findByIdAndUpdate(
@@ -69,5 +70,4 @@ class ContactsController {
   });
 }
 
-
-module.exports = new ContactsController;
+module.exports = new ContactsController();
