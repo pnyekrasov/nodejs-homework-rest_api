@@ -1,7 +1,4 @@
-const routerContacts = require("./api/contacts");
+const routerContacts = require("./contacts");
 const routerUser = require("./users");
 
-module.exports = {
-  routerContacts,
-  routerUser,
-};
+module.exports = { routerContacts, routerUser };

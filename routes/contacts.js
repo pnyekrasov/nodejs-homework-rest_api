@@ -4,11 +4,11 @@ const router = express.Router();
 
 const jsonParser = express.json();
 
-const contactsCtrl = require("../../controllers/ContactsController");
+const contactsCtrl = require("../controllers/ContactsController");
 
-const { validateBody, validateId } = require("../../middlewares");
+const { validateBody, validateId } = require("../middlewares");
 
-const schemes = require("../../schemes");
+const schemes = require("../schemes");
 
 router.get("/", contactsCtrl.getAll);
 
