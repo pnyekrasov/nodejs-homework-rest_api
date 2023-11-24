@@ -11,7 +11,7 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 app.use(logger(formatsLogger));
 app.use(cors());
 
-app.use("/api/auth", require("./routes/api/auth"));
+app.use("/users", require("./routes/api/auth"));
 app.use("/api/contacts", require("./routes/api/contacts"));
 
 app.use((err, req, res, next) => {

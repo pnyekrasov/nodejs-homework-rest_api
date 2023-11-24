@@ -1,6 +1,5 @@
-const { registerUserSchema, logInUserSchema } = require("./user");
+const { userSchema } = require("./user");
 
 module.exports = {
-  registerUserSchema,
-  logInUserSchema,
+  userSchema,
 };

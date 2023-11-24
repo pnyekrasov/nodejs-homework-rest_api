@@ -13,14 +13,14 @@ const schemes = require("../../schemes/user");
 router.post(
   "/register",
   jsonParser,
-  validateBody(schemes.registerUserSchema),
+  validateBody(schemes.userSchema),
   authCtrl.register
 );
 
 router.post(
   "/login",
   jsonParser,
-  validateBody(schemes.logInUserSchema),
+  validateBody(schemes.userSchema),
   authCtrl.login
 );
 
