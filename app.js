@@ -14,7 +14,7 @@ app.use(logger(formatsLogger));
 app.use(cors());
 
 app.use("/api/contacts", require("./routes/contacts"));
-app.use("/user", require("./routes/users"));
+app.use("/users", require("./routes/users"));
 
 app.use((err, req, res, next) => {
   res
