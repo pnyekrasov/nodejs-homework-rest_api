@@ -3,24 +3,27 @@
 
 // const {JWT_SECRET} = process.env;
 
-const { User } = require("../models/user");
+const  User = require("../models/user");
 
 const { HttpError, ctrlWrap } = require("../helpers");
 
 class UserController {
   register = ctrlWrap(async (req, res) => {
     const { email, password } = req.body;
-    const contact = await User.findOne({ email }).exec();
-    if (contact) {
-      throw HttpError(409, `Email in use`);
+    const result = await User.findOne({ email }).exec();
+    if (result) {
+      throw HttpError(409, `Email ${email} in use`);
     }
-
+    if (!email || !password) {
+      throw HttpError(400);
+    } 
     // const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({ ...req.body });
+    const newUser = await User.create({...req.body})
     // const newUser = await User.create({ ...req.body, password: hashPassword });
 
     res.status(201).send({
+      code: 201,
       email: newUser.email,
       subscription: newUser.subscription,
     });

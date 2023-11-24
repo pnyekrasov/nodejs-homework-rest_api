@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const userSchema = Joi.object({
+const userJoiSchema = Joi.object({
   email: Joi.string()
     .pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,6})+$/)
     .required("Set email for user"),
@@ -11,4 +11,4 @@ const userSchema = Joi.object({
   token: Joi.string().default(null),
 });
 
-module.exports = userSchema;
+module.exports = userJoiSchema;

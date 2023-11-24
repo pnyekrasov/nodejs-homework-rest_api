@@ -8,7 +8,7 @@ const contactsCtrl = require("../controllers/ContactsController");
 
 const { validateBody, validateId } = require("../middlewares");
 
-const schemes = require("../schemes");
+const schemes = require("../schemes/contacts");
 
 router.get("/", contactsCtrl.getAll);
 
