@@ -11,4 +11,4 @@ const userJoiSchema = Joi.object({
   token: Joi.string().default(null),
 });
 
-module.exports = userJoiSchema;
+module.exports = {userJoiSchema};

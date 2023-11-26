@@ -14,7 +14,7 @@ const schemes = require("../schemes/users");
 router.post(
   "/register",
   jsonParser,
-  validateBody(schemes.userSchema),
+  validateBody(schemes.userJoiSchema),
   userCtrl.register
 );
 
