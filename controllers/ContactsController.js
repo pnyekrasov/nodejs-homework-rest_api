@@ -4,8 +4,14 @@ const { HttpError, ctrlWrap } = require("../helpers");
 
 class ContactsController {
   getAll = ctrlWrap(async (req, res) => {
-    const contacts = await Contact.find({}, "-createdAt -updatedAt").exec();
-    res.status(200).send({code: 200, contacts, qty: contacts.length});
+    const { _id: owner } = req.user;
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+    const contacts = await Contact.find({ owner }, "-createdAt -updatedAt", {
+      skip,
+      limit,
+    }).exec();
+    res.status(200).send({ code: 200, contacts, qty: contacts.length });
   });
 
   getById = ctrlWrap(async (req, res) => {
@@ -21,26 +27,30 @@ class ContactsController {
 
   add = ctrlWrap(async (req, res) => {
     const { name, email, phone } = req.body;
+
+    if (!name || !email || !phone) {
+      throw HttpError(400);
+    }
+
     const result = await Contact.findOne({ name }).exec();
     if (result) {
       throw HttpError(409, `Contact ${name} already exists`);
     }
-  
-    if (!name || !email || !phone) {
-      throw HttpError(400);
-    }  
 
-    const contact = await Contact.create({ ...req.body });
-  
+    const { _id: owner } = req.user;
+    const contact = await Contact.create({ ...req.body, owner });
+
     res.status(201).send({ code: 201, contact });
   });
 
   remove = ctrlWrap(async (req, res) => {
-    const contact = await Contact.findByIdAndDelete(req.params.contactId).exec();
+    const contact = await Contact.findByIdAndDelete(
+      req.params.contactId
+    ).exec();
     if (!contact) {
       throw HttpError(404);
     }
-    res.send({code: 200, message: "contact deleted" });
+    res.send({ code: 200, message: "contact deleted" });
   });
 
   updateByID = ctrlWrap(async (req, res) => {
@@ -48,13 +58,12 @@ class ContactsController {
       req.params.contactId,
       req.body,
       { new: true }
-    ).exec();  
+    ).exec();
     if (!contact) {
       throw HttpError(404);
     }
     res.status(200).send({ code: 200, contact });
   });
-
 
   updateStatusContact = ctrlWrap(async (req, res) => {
     const contact = await Contact.findByIdAndUpdate(
@@ -67,7 +76,6 @@ class ContactsController {
     }
     res.status(200).send({ code: 200, contact });
   });
-}
+};
 
-
-module.exports = new ContactsController;
+module.exports = new ContactsController();

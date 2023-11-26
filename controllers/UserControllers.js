@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const {JWT_SECRET} = process.env;
+const { JWT_SECRET } = process.env;
 
 const User = require("../models/user");
 
@@ -12,7 +12,7 @@ class UserController {
     const { email, password } = req.body;
 
     const result = await User.findOne({ email }).exec();
-        if (result) {
+    if (result) {
       throw HttpError(409, `Email ${email} in use`);
     }
     if (!email || !password) {
@@ -24,8 +24,10 @@ class UserController {
 
     res.status(201).send({
       code: 201,
-      email: newUser.email,
-      subscription: newUser.subscription,
+      user: {
+        email: newUser.email,
+        subscription: newUser.subscription,
+      },
     });
   });
 
@@ -46,20 +48,37 @@ class UserController {
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "16h" });
 
     await User.findByIdAndUpdate(user._id, { token });
-    res.send({ token });
+    const { subscription } = user;
+    res.status(200).send({ code: 200, token, user: { email, subscription } });
   });
 
-  // getCurrent = ctrlWrap(async (req, res) => {
-  //   const { email, subscription } = req.user;
-  //   res.send({ email, subscription, });
-  // });
+  getCurrent = ctrlWrap(async (req, res) => {
+    const { email, subscription } = req.user;
+    res.status(200).send({ code: 200, email, subscription });
+  });
 
-  // logout = ctrlWrap(async (req, res) => {
-  //     const { _id } = req.user;
-  //     await User.findByIdAndUpdate(_id, { token: null });
+  logout = ctrlWrap(async (req, res) => {
+    await User.findByIdAndUpdate(req.user.id, { token: null });
 
-  //     res.status(204).send({message: "LogOut success"});
-  //   });
+    res.status(204).send({ message: "No Content" });
+  });
+
+  changeSubscription = ctrlWrap(async (req, res) => {
+    const validSubscription = ["starter", "pro", "business"];
+    if (!validSubscription.includes(req.body.subscription)) {
+      throw HttpError(400);
+    }
+
+    const user = await User.findByIdAndUpdate(req.user.id, req.body, {
+      new: true,
+    }).exec();
+    if (!user) {
+      throw HttpError(404);
+    }
+
+    const { email, subscription } = req.user;
+    res.status(200).send({ code: 200, code: 200, email, subscription });
+  });
 }
 
 module.exports = new UserController();
