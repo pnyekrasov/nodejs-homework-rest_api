@@ -6,20 +6,27 @@ const jsonParser = express.json();
 
 const contactsCtrl = require("../controllers/ContactsController");
 
-const { validateBody, validateId } = require("../middlewares");
+const { validateBody, validateId, auth } = require("../middlewares");
 
 const schemes = require("../schemes/contacts");
 
-router.get("/", contactsCtrl.getAll);
+router.get("/", auth, contactsCtrl.getAll);
 
-router.get("/:contactId", validateId, contactsCtrl.getById);
+router.get("/:contactId", auth, validateId, contactsCtrl.getById);
 
-router.post("/", jsonParser, validateBody(schemes.addSchema), contactsCtrl.add);
+router.post(
+  "/",
+  auth,
+  jsonParser,
+  validateBody(schemes.addSchema),
+  contactsCtrl.add
+);
 
-router.delete("/:contactId", validateId, contactsCtrl.remove);
+router.delete("/:contactId", auth, validateId, contactsCtrl.remove);
 
 router.put(
   "/:contactId",
+  auth,
   jsonParser,
   validateBody(schemes.addSchema),
   validateId,
@@ -28,6 +35,7 @@ router.put(
 
 router.patch(
   "/:contactId/favorite",
+  auth,
   jsonParser,
   validateBody(schemes.updateFavoriteSchema),
   validateId,

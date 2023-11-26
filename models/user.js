@@ -7,8 +7,8 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: [true, "Email is required"],
-      // index: true,
-      // unique: true,
+      index: true,
+      unique: true,
       match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,6})+$/,
     },
     password: {
@@ -31,6 +31,4 @@ const userSchema = new Schema(
 
 userSchema.post("save", MongooseError);
 
-const user = model("user", userSchema);
-
-module.exports = user;
+module.exports = model("user", userSchema);

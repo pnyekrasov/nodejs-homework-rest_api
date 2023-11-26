@@ -18,12 +18,12 @@ router.post(
   userCtrl.register
 );
 
-// router.post(
-//   "/login",
-//   jsonParser,
-//   validateBody(schemes.userSchema),
-//   authCtrl.login
-// );
+router.post(
+  "/login",
+  jsonParser,
+  validateBody(schemes.userJoiSchema),
+  userCtrl.login
+);
 
 // router.get("/logout", auth, authCtrl.logout);
 

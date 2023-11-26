@@ -1,26 +1,26 @@
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-// const {JWT_SECRET} = process.env;
+const {JWT_SECRET} = process.env;
 
-const  User = require("../models/user");
+const User = require("../models/user");
 
 const { HttpError, ctrlWrap } = require("../helpers");
 
 class UserController {
   register = ctrlWrap(async (req, res) => {
     const { email, password } = req.body;
+
     const result = await User.findOne({ email }).exec();
-    if (result) {
+        if (result) {
       throw HttpError(409, `Email ${email} in use`);
     }
     if (!email || !password) {
       throw HttpError(400);
-    } 
-    // const hashPassword = await bcrypt.hash(password, 10);
+    }
 
-    const newUser = await User.create({...req.body})
-    // const newUser = await User.create({ ...req.body, password: hashPassword });
+    const hashPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({ ...req.body, password: hashPassword });
 
     res.status(201).send({
       code: 201,
@@ -29,25 +29,25 @@ class UserController {
     });
   });
 
-  // login = ctrlWrap(async (req, res) => {
-  //     const { email, password } = req.body;
-  //     const user = await User.findOne({ email }).exec();
-  //     if (!user) {
-  //       throw HttpError(401, "Email or password is wrong");
-  //     }
-  //     const passwordCompare = await bcrypt.compare(password, user.password);
-  //     if (!passwordCompare) {
-  //       throw HttpError(401, "Email or password is wrong");
-  //     }
+  login = ctrlWrap(async (req, res) => {
+    const { email, password } = req.body;
 
-  //     const payload = {
-  //       id: user._id,
-  //     };
+    const user = await User.findOne({ email }).exec();
+    if (!user) {
+      throw HttpError(401, "Email or password is wrong");
+    }
 
-  //     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "16h" });
-  //     await User.findByIdAndUpdate(user._id, {token});
-  //     res.send({ token });
-  //   });
+    const passwordCompare = await bcrypt.compare(password, user.password);
+    if (!passwordCompare) {
+      throw HttpError(401, "Email or password is wrong");
+    }
+
+    const payload = { id: user._id };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "16h" });
+
+    await User.findByIdAndUpdate(user._id, { token });
+    res.send({ token });
+  });
 
   // getCurrent = ctrlWrap(async (req, res) => {
   //   const { email, subscription } = req.user;
