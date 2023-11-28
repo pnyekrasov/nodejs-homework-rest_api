@@ -5,12 +5,22 @@ const { HttpError, ctrlWrap } = require("../helpers");
 class ContactsController {
   getAll = ctrlWrap(async (req, res) => {
     const { _id: owner } = req.user;
-    const { page = 1, limit = 20 } = req.query;
+    const { favorite, page = 1, limit = 20 } = req.query;
     const skip = (page - 1) * limit;
-    const contacts = await Contact.find({ owner }, "-createdAt -updatedAt", {
-      skip,
-      limit,
-    }).exec();
+
+    const contactList = { owner };
+    if (favorite) {
+      contactList.favorite = favorite;
+    }
+
+    const contacts = await Contact.find(
+      contactList,
+      "-createdAt -updatedAt",
+      {
+        skip,
+        limit,
+      }
+    ).exec();
     res.status(200).send({ code: 200, contacts, qty: contacts.length });
   });
 
@@ -76,6 +86,6 @@ class ContactsController {
     }
     res.status(200).send({ code: 200, contact });
   });
-};
+}
 
 module.exports = new ContactsController();
