@@ -11,4 +11,13 @@ const userJoiSchema = Joi.object({
   token: Joi.string().default(null),
 });
 
-module.exports = {userJoiSchema};
+const emailSchema = Joi.object({
+  email: Joi.string()
+    .pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,6})+$/)
+    .required("Set email for user"),
+});
+
+module.exports = {
+  userJoiSchema,
+  emailSchema,
+};

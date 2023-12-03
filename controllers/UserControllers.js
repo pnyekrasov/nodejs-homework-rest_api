@@ -19,8 +19,8 @@ class UserController {
   register = ctrlWrap(async (req, res) => {
     const { email, password } = req.body;
 
-    const result = await User.findOne({ email }).exec();
-    if (result) {
+    const user = await User.findOne({ email }).exec();
+    if (user) {
       throw HttpError(409, `Email ${email} in use`);
     }
     if (!email || !password) {
@@ -56,8 +56,8 @@ class UserController {
 
   verifyEmail = ctrlWrap(async (req, res) => {
     const { verificationToken } = req.params;
- 
-    const user = await User.findOne({verificationToken}).exec();
+
+    const user = await User.findOne({ verificationToken }).exec();
     if (!user) {
       throw HttpError(404, "User not found");
     }
@@ -67,6 +67,32 @@ class UserController {
       verificationToken: null,
     });
     res.status(200).send({ code: 200, message: "OK" });
+  });
+
+  resendVerifyEmail = ctrlWrap(async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email }).exec();
+    if (!user) {
+      throw HttpError(401, `Email ${email} not found`);
+    }
+    if (user.verify) {
+      throw HttpError(401, `Email ${email} already verified`);
+    }
+
+    await sendEmail({
+      to: email,
+      subject: "Welcome to Phonebook manager",
+      html: `To confirm your registration please click on the <a href="${BASE_URL}/users/verify/${user.verificationToken}">link</a>`,
+      text: `To confirm your registration please open the link ${BASE_URL}/users/verify/${user.verificationToken}`,
+    });
+
+    res.status(201).send({
+      code: 201,
+      user: {
+        email: newUser.email,
+        subscription: newUser.subscription,
+      },
+    });
   });
 
   login = ctrlWrap(async (req, res) => {

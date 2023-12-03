@@ -22,6 +22,13 @@ router.get("/verify/:verificationToken", userCtrl.verifyEmail);
 router.post("/verify/:verificationToken", userCtrl.verifyEmail);
 
 router.post(
+  "/verify",
+  jsonParser,
+  validateBody(schemes.emailSchema),
+  userCtrl.resendVerifyEmail
+);
+
+router.post(
   "/login",
   jsonParser,
   validateBody(schemes.userJoiSchema),
