@@ -77,17 +77,12 @@ class UserController {
     }
 
     const user = await User.findOne({ email }).exec();
-    if (!user) {
+    if (!user || !bcrypt.compare(password, user.password)) {
       throw HttpError(401, "Email or password is wrong");
     }
 
     if (!user.verify) {
       throw HttpError(401, "Your account is not verified");
-    }
-
-    const passwordCompare = await bcrypt.compare(password, user.password);
-    if (!passwordCompare) {
-      throw HttpError(401, "Email or password is wrong");
     }
 
     const payload = { id: user._id };
