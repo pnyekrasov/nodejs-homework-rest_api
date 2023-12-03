@@ -72,6 +72,10 @@ class UserController {
   login = ctrlWrap(async (req, res) => {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      throw HttpError(400);
+    }
+
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw HttpError(401, "Email or password is wrong");
