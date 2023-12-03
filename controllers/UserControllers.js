@@ -1,3 +1,5 @@
+const crypto = require("node:crypto");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
@@ -5,13 +7,13 @@ const path = require("node:path");
 const fs = require("node:fs/promises");
 const Jimp = require("jimp");
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, BASE_URL } = process.env;
 
 const User = require("../models/user");
 
 const avatarsDir = path.join(__dirname, "..", "public", "avatars");
 
-const { HttpError, ctrlWrap } = require("../helpers");
+const { HttpError, ctrlWrap, sendEmail } = require("../helpers");
 
 class UserController {
   register = ctrlWrap(async (req, res) => {
@@ -27,10 +29,20 @@ class UserController {
 
     const hashPassword = await bcrypt.hash(password, 10);
     const avatarURL = gravatar.url(email);
+    const verificationToken = crypto.randomUUID();
+
     const newUser = await User.create({
       ...req.body,
       password: hashPassword,
       avatarURL,
+      verificationToken,
+    });
+
+    await sendEmail({
+      to: email,
+      subject: "Welcome to Phonebook manager",
+      html: `To confirm your registration please click on the <a href="${BASE_URL}/users/verify/${verificationToken}">link</a>`,
+      text: `To confirm your registration please open the link ${BASE_URL}/users/verify/${verificationToken}`,
     });
 
     res.status(201).send({
@@ -42,12 +54,31 @@ class UserController {
     });
   });
 
+  verifyEmail = ctrlWrap(async (req, res) => {
+    const { verificationToken } = req.params;
+ 
+    const user = await User.findOne({verificationToken}).exec();
+    if (!user) {
+      throw HttpError(404, "User not found");
+    }
+
+    await User.findByIdAndUpdate(user._id, {
+      verify: true,
+      verificationToken: null,
+    });
+    res.status(200).send({ code: 200, message: "OK" });
+  });
+
   login = ctrlWrap(async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw HttpError(401, "Email or password is wrong");
+    }
+
+    if (!user.verify) {
+      throw HttpError(401, "Your account is not verified");
     }
 
     const passwordCompare = await bcrypt.compare(password, user.password);

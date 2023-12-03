@@ -17,6 +17,10 @@ router.post(
   userCtrl.register
 );
 
+router.get("/verify/:verificationToken", userCtrl.verifyEmail);
+
+router.post("/verify/:verificationToken", userCtrl.verifyEmail);
+
 router.post(
   "/login",
   jsonParser,
@@ -33,4 +37,3 @@ router.patch("/", auth, jsonParser, userCtrl.changeSubscription);
 router.patch("/avatars", auth, upload.single("avatar"), userCtrl.changeAvatar);
 
 module.exports = router;
-
